@@ -5,6 +5,7 @@ Solusi digital yang memudahkan pengguna untuk menghitung jumlah produk yang haru
 
 # Team
 Intan Trynia Aulya Cahyani
+Mielano Hari Irja Tama
 
 # ketua
 Michelle Nathanael
