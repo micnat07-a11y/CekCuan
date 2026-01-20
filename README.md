@@ -47,3 +47,44 @@ Tanpa login
 Edukasi singkat tentang arti balik modal dan keuntungan
 Tips sederhana menentukan harga jual
 Potensi pengembangan: laporan sederhana dan grafik penjualan
+
+# prompt_jadi
+Kamu adalah AI pembuat aplikasi web yang ahli dalam HTML, CSS, dan JavaScript.
+Buatkan sebuah website statis berbasis HTML, CSS, dan JavaScript berdasarkan informasi berikut:
+# Nama Aplikasi
+CekCuan
+# Tujuan / Fungsi Utama
+Membantu pelaku UMKM menghitung jumlah minimal produk yang harus dijual agar balik modal dan mencapai target keuntungan, tanpa perlu memahami rumus keuangan yang rumit.
+# Target Pengguna
+Pelaku UMKM pemula maupun yang sudah berjalan, seperti usaha makanan, minuman, fashion, kerajinan, reseller, dan jasa kecil.
+# Fitur-Fitur yang Diinginkan
+Input total modal usaha
+Input harga jual per produk
+Input biaya produksi per produk
+Hasil perhitungan otomatis dan instan
+# Desain dan Gaya Tampilan
+Tampilan sederhana dan bersih
+Form input singkat dan jelas
+Tombol utama “Hitung Cuan”
+Hasil ditampilkan dengan teks besar dan mudah dibaca
+Desain responsif (mobile friendly)
+warna #4C763B
+font Oswald
+# Interaksi dan Perilaku
+Pengguna mengisi form
+Menekan tombol “Hitung Cuan”
+Sistem langsung menampilkan hasil perhitungan
+Tidak perlu navigasi rumit
+# Teknologi dan Struktur
+Web-based application
+Frontend: HTML, CSS, JavaScript
+Backend (opsional): JavaScript / API sederhana
+Bisa diintegrasikan dengan Google AI Studio atau platform no-code
+# Tambahan
+Edukasi singkat tentang arti balik modal dan keuntungan
+Tips sederhana menentukan harga jual
+Potensi pengembangan: laporan sederhana dan grafik penjualan
+# Instruksi Akhir
+Buat seluruh aplikasi dalam satu file HTML agar mudah dijalankan.
+Gunakan Bootstrap 5 untuk tampilan modern.
+Pastikan tampilannya responsive di perangkat mobile.
