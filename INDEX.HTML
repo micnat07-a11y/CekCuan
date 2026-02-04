@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CekCuan App</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&display=swap');
+body { font-family: 'Oswald', sans-serif; background:#f8fafc; }
+.primary { color:#4C763B }
+.bg-primary { background:#4C763B }
+.border-primary { border-color:#4C763B }
+
+/* POPUP PREMIUM */
+#premiumPopup {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center;
+  z-index:50;
+}
+#premiumPopupContent {
+  background:white; padding:2rem; border-radius:1rem; max-width:400px; width:90%;
+  text-align:center; position:relative;
+}
+#premiumPopupContent h2 { font-size:1.5rem; margin-bottom:1rem; }
+#premiumPopupContent button { margin-top:1rem; }
+#premiumPopupContent .closePopup {
+  position:absolute; top:0.5rem; right:0.5rem; cursor:pointer; font-weight:bold;
+}
+</style>
+</head>
+
+<body class="p-4 md:p-8">
+
+<div class="max-w-6xl mx-auto">
+
+<!-- HEADER -->
+<div class="mb-8 text-center">
+  <div class="flex items-center justify-center gap-1">
+    <img 
+      src="LOGO/WhatsApp_Image_2026-01-22_at_08.22.19-removebg-preview.png"
+      alt="Logo CekCuan"
+      class="w-16 h-16 md:w-20 md:h-20 object-contain"
+    >
+    <h1 class="text-4xl font-bold text-slate-800">
+      Cek<span class="primary">Cuan</span>
+    </h1>
+  </div>
+  <p class="text-slate-500 tracking-wide mt-1">
+    Grafik cuan & rugi yang mudah dipahami
+  </p>
+</div>
+
+<!-- GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+<!-- INPUT -->
+<div class="bg-white p-6 rounded-2xl border shadow-sm">
+<h2 class="text-xl font-semibold mb-5">Input Data Bisnis</h2>
+
+<div class="space-y-3">
+<div>
+<label class="text-sm text-slate-600 font-medium">Modal Awal</label>
+<input id="modal" class="uang w-full p-3 border rounded-xl" placeholder="Contoh: 1.000.000">
+</div>
+
+<div>
+<label class="text-sm text-slate-600 font-medium">Biaya per Unit</label>
+<input id="biaya" class="uang w-full p-3 border rounded-xl" placeholder="Contoh: 10.000">
+</div>
+
+<div>
+<label class="text-sm text-slate-600 font-medium">Harga Jual per Unit</label>
+<input id="harga" class="uang w-full p-3 border rounded-xl" placeholder="Contoh: 15.000">
+</div>
+
+<!-- NOTIF VALIDASI -->
+<p id="notifError" class="text-sm text-rose-600 mt-1"></p>
+
+<button onclick="calculate()"
+class="w-full bg-primary text-white py-3 rounded-xl font-semibold mt-2">
+HITUNG CUAN
+</button>
+
+<!-- INFO LIMIT -->
+<p id="limitInfo" class="text-sm text-slate-500 text-center mt-2"></p>
+
+<!-- TOMBOL TEST PREMIUM -->
+<button onclick="activatePremium()"
+class="w-full text-sm mt-2 underline text-emerald-600">
+Aktifkan Premium (Testing)
+</button>
+
+<!-- RESET APP -->
+<button onclick="resetApp()"
+class="w-full text-sm mt-1 underline text-rose-600">
+Reset App (Testing)
+</button>
+
+</div>
+</div>
+
+<!-- HASIL -->
+<div class="lg:col-span-2 space-y-5">
+
+<div class="grid md:grid-cols-3 gap-4">
+<div id="cardStatus" class="p-6 rounded-2xl bg-white border">
+<p id="statusLabel">Keuntungan / Unit</p>
+<h3 id="labaPerUnit" class="text-3xl font-bold">Rp 0</h3>
+</div>
+
+<div class="p-6 rounded-2xl bg-primary text-white">
+<p>Balik Modal (BEP)</p>
+<h3 id="unitTarget" class="text-3xl font-bold">0 Unit</h3>
+</div>
+
+<!-- HPP -->
+<div class="p-6 rounded-2xl bg-slate-100 border">
+<p class="text-sm tracking-wide">HPP / Unit</p>
+<h3 id="hppPerUnit" class="text-3xl font-bold">Rp 0</h3>
+</div>
+</div>
+
+<!-- GRAFIK -->
+<div class="bg-white p-6 rounded-2xl border">
+<h2 class="font-semibold mb-1 tracking-wide">
+Grafik Perjalanan Cuan
+</h2>
+<p class="text-sm mb-3">
+<span class="text-red-600 font-semibold">Merah = rugi</span> •
+<span class="text-emerald-600 font-semibold">Hijau = untung</span> •
+<span class="text-slate-500">Garis putus = balik modal</span>
+</p>
+<div class="h-64">
+<canvas id="cuanChart"></canvas>
+</div>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-2xl text-white flex justify-between">
+<div>
+<p class="text-slate-400 text-sm tracking-wide">Titik Balik Modal</p>
+<p id="bepUnit" class="text-xl font-semibold">0 Unit</p>
+</div>
+<div class="text-right">
+<p class="text-slate-400 text-sm tracking-wide">Omzet Saat BEP</p>
+<p id="totalOmzet" class="text-xl font-semibold text-emerald-400">Rp 0</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- POPUP PREMIUM -->
+<div id="premiumPopup" class="flex">
+  <div id="premiumPopupContent">
+    <span class="closePopup" onclick="closePremiumPopup()">×</span>
+    <h2>Upgrade ke Premium 🔥</h2>
+    <p>Saat ini limit gratis 3x perhitungan sudah habis.</p>
+    <p>Dapatkan akses tak terbatas dengan Premium.</p>
+    <button onclick="confirmPremium()" class="bg-emerald-600 text-white px-4 py-2 rounded mt-2">
+      Upgrade Sekarang
+    </button>
+  </div>
+</div>
+
+<script>
+/* =================== PREMIUM LOGIC =================== */
+const MAX_FREE_USAGE = 3;
+function getUsage(){ return parseInt(localStorage.getItem('cekcuan_usage')) || 0; }
+function setUsage(val){ localStorage.setItem('cekcuan_usage', val); }
+function isPremium(){ return localStorage.getItem('cekcuan_premium')==='true'; }
+function activatePremium(){ localStorage.setItem('cekcuan_premium','true'); alert('Premium Aktif 🔥'); updateLimitInfo(); }
+function resetApp(){ localStorage.removeItem('cekcuan_premium'); localStorage.removeItem('cekcuan_usage'); location.reload(); }
+function updateLimitInfo(){ const info=document.getElementById('limitInfo'); info.innerText = isPremium() ? 'Status: PREMIUM (Unlimited)' : `Gratis: ${getUsage()} / ${MAX_FREE_USAGE} pemakaian`; }
+
+/* =================== PREMIUM POPUP =================== */
+function showPremiumPopup(){ document.getElementById('premiumPopup').style.display='flex'; }
+function closePremiumPopup(){ document.getElementById('premiumPopup').style.display='none'; }
+function confirmPremium(){ localStorage.setItem('cekcuan_premium','true'); closePremiumPopup(); updateLimitInfo(); alert('Selamat! Premium Aktif 🔥'); }
+
+/* =================== INPUT FORMAT =================== */
+function formatRupiah(val){ return val.replace(/\D/g,'').replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+function getNumber(el){ return parseInt(el.value.replace(/\./g,''))||0; }
+document.querySelectorAll('.uang').forEach(i=>{ i.addEventListener('input',()=> i.value=formatRupiah(i.value)); });
+
+/* =================== CHART =================== */
+const cuanChart=new Chart(document.getElementById('cuanChart'),{
+type:'line',
+data:{ labels:[], datasets:[
+  { label:'Cuan', data:[], borderWidth:3, pointRadius:0, tension:0.45, segment:{ borderColor:ctx => ctx.p0.parsed.y>=0?'#4C763B':'#dc2626' }},
+  { label:'BEP', data:[], borderColor:'#94a3b8', borderDash:[6,6], pointRadius:0 }
+]},
+options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false }}, scales:{ x:{ grid:{ display:false }}, y:{ ticks:{ callback:v=>`Rp ${v.toLocaleString('id-ID')}` }}}}
+});
+
+/* =================== CALCULATE =================== */
+const modalEl=document.getElementById('modal');
+const biayaEl=document.getElementById('biaya');
+const hargaEl=document.getElementById('harga');
+const labaPerUnit=document.getElementById('labaPerUnit');
+const cardStatus=document.getElementById('cardStatus');
+const statusLabel=document.getElementById('statusLabel');
+const unitTarget=document.getElementById('unitTarget');
+const bepUnit=document.getElementById('bepUnit');
+const totalOmzet=document.getElementById('totalOmzet');
+const hppPerUnit=document.getElementById('hppPerUnit');
+const notifError=document.getElementById('notifError');
+
+function calculate(){
+  notifError.innerText=''; // reset notif
+
+  const modal=getNumber(modalEl);
+  const biaya=getNumber(biayaEl);
+  const harga=getNumber(hargaEl);
+
+  // VALIDASI BIAYA > HARGA
+  if(biaya > harga){
+    notifError.innerText='Error ❌ Biaya per Unit tidak boleh lebih besar dari Harga Jual!';
+    return;
+  }
+
+  if(!isPremium()){
+    let usage=getUsage();
+    if(usage>=MAX_FREE_USAGE){ showPremiumPopup(); return; }
+    setUsage(usage+1); updateLimitInfo();
+  }
+
+  const profitPerUnit=harga-biaya;
+
+  // Update Keuntungan / Unit
+  labaPerUnit.innerText=`Rp ${profitPerUnit.toLocaleString('id-ID')}`;
+  statusLabel.innerText=profitPerUnit>0?'Keuntungan / Unit':'Status: Rugi';
+  cardStatus.className=profitPerUnit>0?'p-6 rounded-2xl bg-emerald-50 border text-emerald-800':'p-6 rounded-2xl bg-rose-50 border text-rose-700';
+
+  // Hitung BEP
+  const bep=profitPerUnit>0?Math.ceil(modal/profitPerUnit):0;
+  unitTarget.innerText=`${bep.toLocaleString('id-ID')} Unit`;
+  bepUnit.innerText=`${bep.toLocaleString('id-ID')} Unit`;
+  totalOmzet.innerText=`Rp ${(bep*harga).toLocaleString('id-ID')}`;
+
+  // HPP
+  const hpp=(modal+biaya*bep)/(bep||1);
+  hppPerUnit.innerText=`Rp ${Math.round(hpp).toLocaleString('id-ID')}`;
+
+  // Chart
+  const maxUnit=Math.max(bep*2,10);
+  const labels=[], profitData=[], zeroLine=[];
+  for(let i=0;i<=maxUnit;i++){
+    labels.push(i);
+    const realProfit=(harga*i)-(modal+biaya*i);
+    const curve=Math.sqrt(i/maxUnit||0);
+    profitData.push(realProfit*curve);
+    zeroLine.push(0);
+  }
+  cuanChart.data.labels=labels;
+  cuanChart.data.datasets[0].data=profitData;
+  cuanChart.data.datasets[1].data=zeroLine;
+  cuanChart.update();
+}
+
+updateLimitInfo();
+</script>
+
+</body>
+</html>
