@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 150 10% 6%;
+    --foreground: 80 10% 92%;
+    --card: 150 10% 9%;
+    --card-foreground: 80 10% 92%;
+    --popover: 150 10% 9%;
+    --popover-foreground: 80 10% 92%;
+    --primary: 105 28% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 150 8% 14%;
+    --secondary-foreground: 80 10% 85%;
+    --muted: 150 8% 14%;
+    --muted-foreground: 80 5% 55%;
+    --accent: 105 28% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 150 8% 18%;
+    --input: 150 8% 18%;
+    --ring: 105 28% 35%;
+    --chart-1: 105 50% 45%;
+    --chart-2: 0 70% 50%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.75rem;
+    --sidebar-background: 150 10% 6%;
+    --sidebar-foreground: 80 10% 92%;
+    --sidebar-primary: 105 28% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 150 8% 14%;
+    --sidebar-accent-foreground: 80 10% 92%;
+    --sidebar-border: 150 8% 18%;
+    --sidebar-ring: 105 28% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 5s ease-in-out infinite 1s;
+}
